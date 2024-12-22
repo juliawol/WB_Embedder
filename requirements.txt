@@ -1,0 +1,6 @@
+pandas
+sentence-transformers
+transformers
+torch
+tqdm
+datasets
