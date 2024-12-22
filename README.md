@@ -10,6 +10,7 @@ main
 │   ├── Brand_Similarity.ipynb              # Generates brand similarity candidates using semantic embeddings.
 │   ├── Semi_Automated_Annotation_Triplets.ipynb  # Automates triplet generation for fine-tuning.
 │   ├── Fine-tuned_Embedder.ipynb           # Fine-tunes the embedding model for all tasks.
+│   ├── WB_Embedder_GigaChat.ipynb          # Fine-tunes the Giga-Embeddings model for benchmarking.
 ├── README                                  # Comprehensive guide to the repository.
 ├── requirements.txt                        # Dependencies for the project.
 ```
@@ -17,9 +18,9 @@ main
 ## Overview
 
 This project addresses 11 benchmarks focusing on retrieval, classification, and ranking tasks. The primary datasets used include:
-- **`data_sampled_30.csv`**: The main dataset for retrieval tasks.
-- **`triplet_candidates.csv`**: Triplets generated for the **WBSimGoods-triplets** task.
-- **`brand_candidates.csv`**: Brand similarity pairs generated for the **WBBrandSyns** task.
+- **`data_sampled_30.csv`**: The main dataset for retrieval and classification tasks, preprocessed to include necessary information such as titles, descriptions, and queries.
+- **`triplet_candidates.csv`**: Triplets generated for the **WBSimGoods-triplets** task, used to fine-tune the model for similarity and ranking benchmarks.
+- **`brand_candidates.csv`**: Brand similarity pairs generated for the **WBBrandSyns** task, providing data to optimize embeddings for synonym identification.
 
 The tasks are implemented and validated using a multi-task learning framework with shared embeddings and task-specific heads.
 
@@ -47,6 +48,7 @@ The tasks are implemented and validated using a multi-task learning framework wi
 ### Data Preprocessing
 - **Brand Similarity Pipeline**: This pipeline leverages RuBERT embeddings to generate brand similarity candidates for the **WBBrandSyns** task. Semantic embeddings are used to compute cosine similarity between brand names, ensuring high-quality candidate generation.
 - **Triplet Annotation Pipeline**: A semi-automated process for generating triplets for the **WBSimGoods-triplets** task. Anchors, positives, and negatives are defined based on semantic relationships and parent categories. The process is augmented with manual validation for higher accuracy.
+- **Classification and Retrieval Preprocessing**: The `data_sampled_30.csv` dataset was carefully preprocessed to include relevant features (titles, descriptions, queries) for retrieval and classification tasks. This ensures robust performance across multiple benchmarks.
 
 ### Fine-Tuning Pipeline
 The fine-tuning pipeline implements a multi-task learning framework:
@@ -55,25 +57,26 @@ The fine-tuning pipeline implements a multi-task learning framework:
 3. Contrastive loss is applied to optimize embedding spaces for retrieval and ranking tasks.
 4. Multi-task training ensures balanced performance across diverse benchmarks.
 
-## Modeling Decisions
-1. **RuBERT for Semantic Embeddings**:
-   - Chosen for its strong performance on Russian-language tasks.
-   - Ensures robust handling of language-specific nuances in retrieval and similarity tasks.
-2. **Contrastive Loss for Ranking Tasks**:
-   - Enables effective optimization of embedding distances for triplet-based tasks.
-3. **Multi-Task Framework**:
-   - Balances shared knowledge representation and task-specific learning, improving overall benchmark performance.
+## Models Evaluated
+Two models were evaluated in this project:
 
-## Challenges and Solutions
-1. **Data Imbalance**:
-   - Challenges: Certain categories and tasks lacked sufficient training data.
-   - Solution: Semi-automated generation and manual annotation pipelines to augment datasets.
-2. **Computational Complexity**:
-   - Challenges: Large datasets and embeddings caused memory and compute bottlenecks.
-   - Solution: Efficient batching and approximate nearest neighbor methods were employed for similarity calculations.
-3. **Task Divergence**:
-   - Challenges: Balancing retrieval, classification, and ranking tasks with a single model.
-   - Solution: A multi-task learning framework with weighted losses for task prioritization.
+1. **`DeepPavlov/rubert-base-cased`**:
+   - **Strengths**: 
+     - Well-established for Russian-language tasks.
+     - Robust performance on classification tasks due to its pretraining on diverse Russian datasets.
+   - **Weaknesses**:
+     - Limited flexibility for instruction-based retrieval tasks.
+     - Requires additional fine-tuning for ranking and similarity benchmarks.
+
+2. **`ai-sage/Giga-Embeddings-instruct`**:
+   - **Strengths**:
+     - Supports task-specific instructional prefixes, making it ideal for retrieval and ranking tasks.
+     - Strong performance in embedding-based similarity tasks like **WBSimGoods-triplets** and **WBBrandSyns**.
+   - **Weaknesses**:
+     - As a newer model, it may require more experimentation to optimize for classification tasks.
+     - Instructional design introduces complexity in dataset preparation.
+
+Both models were fine-tuned and tested against the 11 benchmarks, leveraging the same data pipeline for consistency in evaluation.
 
 ## Notebooks
 
@@ -92,6 +95,10 @@ The fine-tuning pipeline implements a multi-task learning framework:
   - **`brand_candidates.csv`**
 - Fine-tunes embeddings to optimize for all benchmarks.
 
+### 4. WB_Embedder_GigaChat.ipynb
+- Focuses on fine-tuning the **`ai-sage/Giga-Embeddings-instruct`** model for retrieval and ranking tasks.
+- Compares performance against the RuBERT-based model.
+
 ## Installation
 
 ### Requirements
@@ -107,37 +114,93 @@ tqdm
 datasets
 ```
 
-### Setup
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your_username/your_repo.git
-   cd your_repo
-   ```
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Ensure all datasets are placed in the appropriate location:
-   - `data_sampled_30.csv` (main dataset)
-   - `triplet_candidates.csv` (triplets for WBSimGoods-triplets)
-   - `brand_candidates.csv` (brand similarity pairs for WBBrandSyns)
-
-## Usage
-
-### Run Notebooks
-Each notebook is designed to handle a specific stage of the pipeline. Open the desired notebook in Jupyter or Colab and run the cells sequentially.
-
-### Fine-Tuning
-To fine-tune the model for all benchmarks, execute the `Fine-tuned_Embedder.ipynb` notebook. This will:
-- Train the model using the datasets.
-- Save the fine-tuned model and heads.
 
 ### Model Outputs
-The fine-tuned model and classification/ranking heads are saved in the `fine_tuned_model` directory.
+The fine-tuned models and classification/ranking heads are saved in the `fine_tuned_model` directory.
 
 ## Future Work
 - Add more robust evaluation scripts for each benchmark.
 - Explore multilingual fine-tuning for additional language support.
 - Integrate real-time deployment pipelines for the fine-tuned model.
+
+
+# Проект: Дообученная модель для генерации эмбеддингов 
+
+Этот репозиторий содержит комплексный пайплайн для настройки эмбеддингов и достижения высокого уровня производительности по 11 заданным тестам. Проект интегрирует несколько наборов данных и задач, используя передовые техники семантического сопоставления и поиска, специально адаптированные для задач на русском языке.
+
+## Структура репозитория
+
+```
+main
+├── notebooks
+│   ├── Brand_Similarity.ipynb              # Генерация кандидатов на совпадение брендов с использованием семантических эмбеддингов.
+│   ├── Semi_Automated_Annotation_Triplets.ipynb  # Полуавтоматическая генерация триплетов для настройки.
+│   ├── Fine-tuned_Embedder.ipynb           # Настройка эмбеддинговой модели для всех задач.
+│   ├── WB_Embedder_GigaChat.ipynb          # Настройка модели Giga-Embeddings для тестирования.
+├── README                                  # Подробное руководство по репозиторию.
+├── requirements.txt                        # Зависимости для проекта.
+```
+
+## Обзор
+
+Проект рассчитан на 11 тестов, охватвающих задачи поиска, классификации и ранжирования. Основные используемые наборы данных:
+- **`data_sampled_30.csv`**: Основной набор данных для задач поиска и классификации, предварительно обработанный для включения необходимой информации, такой как заголовки, описания и запросы.
+- **`triplet_candidates.csv`**: Триплеты, созданные для задачи **WBSimGoods-triplets**, используются для настройки модели на задачи сходства и ранжирования.
+- **`brand_candidates.csv`**: Пары брендов для задачи **WBBrandSyns**, предоставляющие данные для оптимизации эмбеддингов для идентификации синонимов.
+
+Задачи реализуются и проверяются с использованием многозадачного фреймворка с общими эмбеддингами и головами, специфичными для задач.
+
+## Тесты
+
+### Задачи поиска:
+1. **WBQAGoods-all**: Ранжирование ответов с учетом информации о товаре.
+2. **WBQAGoods-answer**: Ранжирование ответов без учета контекста товара.
+3. **WBQAGoods-description**: Ранжирование описаний товаров для вопросов.
+4. **WBQASupportFacts**: Ранжирование фактов поддержки для вопросов, связанных с товарами.
+
+### Задачи классификации:
+5. **WBReviewsClassification**: Классификация отзывов о товарах по оценкам (1-5).
+6. **WBReviewsPolarityClassification**: Классификация отзывов как положительных или отрицательных.
+7. **WBReviewsSummarizationClassification**: Классификация саммари по набору отзывов на хорошие саммари и плохие. 
+8. **WBGoodsCategoriesClassification**: Классификация товаров по родительским категориям.
+9. **WBGenderClassification**: Определение пола пользователей на основе истории покупок.
+10. **WBQASupportShort**: Делит ответы на короткие и длинные.
+
+### Задачи ранжирования:
+11. **WBSearchQueryNmRelevance**: Ранжирование товаров по поисковым запросам.
+
+---
+
+## Пайплайны
+
+### Предварительная обработка данных
+- **Пайплайн сравнения брендов**: Использует эмбеддинги RuBERT для генерации кандидатов на совпадение брендов для задачи **WBBrandSyns**. Косинусное сходство используется для оценки схожести между названиями брендов.
+- **Пайплайн аннотации триплетов**: Полуавтоматическая генерация триплетов для задачи **WBSimGoods-triplets**. Анкеры, позитивные и негативные примеры определяются на основе семантических отношений и родительских категорий.
+- **Предварительная обработка классификации и поиска**: Набор данных `data_sampled_30.csv` был предварительно обработан для включения всех необходимых характеристик (заголовки, описания, запросы).
+
+### Пайплайн настройки
+1. Общий энкодер используется для обработки всех задач, что упрощает генерализацию.
+2. Головы для классификации, поиска и ранжирования.
+3. Контрастивная функция потерь оптимизирует пространства эмбеддингов для задач поиска и ранжирования.
+4. Многозадачное обучение обеспечивает сбалансированную производительность для всех тестов.
+
+---
+
+## Оцененные модели
+
+1. **`DeepPavlov/rubert-base-cased`**:
+   - **Преимущества**:
+     - Хорошо зарекомендовал себя для задач на русском языке.
+     - Надежная производительность для задач классификации.
+   - **Недостатки**:
+     - Ограниченная гибкость для задач поиска с использованием инструкций.
+     - Требует дополнительной настройки для задач ранжирования.
+
+2. **`ai-sage/Giga-Embeddings-instruct`**:
+   - **Преимущества**:
+     - Поддержка инструктивных префиксов для задач поиска.
+     - Отличная производительность в задачах сходства.
+   - **Недостатки**:
+     - Новая модель, требующая дополнительной оптимизации.
+     - Инструкции усложняют предварительную обработку данных.
