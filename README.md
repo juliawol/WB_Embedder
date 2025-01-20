@@ -10,7 +10,6 @@ main
 │   ├── WBBrandSyns.ipynb                         # Generates brand synonyms candidates using transliteration rules.
 │   ├── Semi_Automated_Annotation_Triplets.ipynb  # Automates triplet generation for fine-tuning.
 │   ├── WB_Giga_Embeddings_Fine_tuning.ipynb      # Fine-tunes the embedding model for all tasks.
-├── data
 │   ├── Cleaned_Dataset.ipynb                     # Cleaned initial dataset used to generate synthetic data 
 ├── README                                  # Comprehensive guide to the repository.
 ├── requirements.txt                        # Dependencies for the project.
@@ -140,7 +139,6 @@ main
 │   ├── WBBrandSyns.ipynb                         # Генерация кандидатов на синонимы брендов с использованием правил транслитерации.
 │   ├── Semi_Automated_Annotation_Triplets.ipynb  # Полуавтоматическая аннотация триплетов для обучения.
 │   ├── WB_Giga_Embeddings_Fine_tuning.ipynb      # Тонкая настройка эмбеддинговой модели для всех задач.
-├── data
 │   ├── Cleaned_Dataset.ipynb                     # Очищенный набор данных, использованный для генерации синтетических датасетов 
 ├── README                                  # Подробное описание репозитория.
 ├── requirements.txt                        # Зависимости проекта.
