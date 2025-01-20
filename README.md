@@ -10,6 +10,8 @@ main
 │   ├── WBBrandSyns.ipynb                         # Generates brand synonyms candidates using transliteration rules.
 │   ├── Semi_Automated_Annotation_Triplets.ipynb  # Automates triplet generation for fine-tuning.
 │   ├── WB_Giga_Embeddings_Fine_tuning.ipynb      # Fine-tunes the embedding model for all tasks.
+├── data
+│   ├── Cleaned_Dataset.ipynb                     # Cleaned initial dataset used to generate synthetic data 
 ├── README                                  # Comprehensive guide to the repository.
 ├── requirements.txt                        # Dependencies for the project.
 ```
@@ -126,7 +128,7 @@ The fine-tuned **Giga-Embeddings-Instruct** model demonstrates strong performanc
 
 ### **Проект: Тонко настроенный эмбеддер для многозадачного тестирования**
 
-Этот репозиторий содержит полный пайплайн для тонкой настройки эмбеддеров и достижения высоких результатов по 11 определённым бенчмаркам. Проект интегрирует множество датасетов и задач, используя передовые методы семантического поиска и ранжирования, специально адаптированные для задач на русском языке.
+Этот репозиторий содержит полный пайплайн для тонкой настройки эмбеддера и достижения высоких результатов по 11 определённым бенчмаркам в области ритейла. Проект интегрирует множество датасетов и задач, используя передовые методы семантического поиска и ранжирования, специально адаптированные для задач на русском языке.
 
 ---
 
@@ -138,11 +140,11 @@ main
 │   ├── WBBrandSyns.ipynb                         # Генерация кандидатов на синонимы брендов с использованием правил транслитерации.
 │   ├── Semi_Automated_Annotation_Triplets.ipynb  # Полуавтоматическая аннотация триплетов для обучения.
 │   ├── WB_Giga_Embeddings_Fine_tuning.ipynb      # Тонкая настройка эмбеддинговой модели для всех задач.
+├── data
+│   ├── Cleaned_Dataset.ipynb                     # Очищенный набор данных, использованный для генерации синтетических датасетов 
 ├── README                                  # Подробное описание репозитория.
 ├── requirements.txt                        # Зависимости проекта.
 ```
-
----
 
 ### **О модели Giga-Embeddings-Instruct**
 
